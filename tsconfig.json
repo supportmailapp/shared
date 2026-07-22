@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "declaration": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+
+    "paths": {
+      "$types": ["./src/types/index.ts"],
+      "$types/*": ["./src/types/*"],
+      "$protocol": ["./src/protocol/index.ts"],
+      "$protocol/*": ["./src/protocol/*"],
+      "$utils": ["./src/utils/index.ts"],
+      "$utils/*": ["./src/utils/*"],
+      "$models": ["./src/models/index.ts"],
+      "$models/*": ["./src/models/*"]
+    }
+  },
+  "include": ["src"]
+}

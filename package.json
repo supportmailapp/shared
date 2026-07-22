@@ -1,0 +1,34 @@
+{
+  "name": "@supportmailapp/shared",
+  "version": "0.0.1",
+  "description": "Shared stuff for SupportMail",
+  "type": "module",
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "mongoose": "9.8.0",
+    "prettier": "^3.9.5",
+    "tsdown": "^0.22.5",
+    "typescript": "^6.0.3"
+  },
+  "exports": {
+    "./models": "./dist/models/index.mjs",
+    "./protocol": "./dist/protocol/index.mjs",
+    "./types": "./dist/types/index.mjs",
+    "./utils": "./dist/utils/index.mjs",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "peerDependencies": {
+    "mongoose": ">=9"
+  },
+  "overrides": {
+    "bson": "7.2.0"
+  }
+}
