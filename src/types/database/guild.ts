@@ -45,6 +45,11 @@ export interface ITicketConfig {
   webhookDocId?: string;
   creationMessage?: string | null;
   closeMessage?: string | null;
+  /**
+   * When true, unpausing a ticket offers staff the option to bulk-delete
+   * the message history accumulated while the ticket was paused.
+   */
+  askDeleteHistoryOnPause?: boolean;
 }
 
 export interface ReportChannelSettings {

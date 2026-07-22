@@ -5,6 +5,8 @@
 // touches `process.env`, `$env/*`, node:crypto, or the filesystem belongs in
 // the consuming app, not here.
 
+import type { DaySchedule } from "$types/database/schedule.js";
+
 /** Discord snowflakes are 17–20 digit numeric strings. */
 export function isSnowflake(v: string): boolean {
   return /^\d{17,20}$/.test(v);
@@ -24,5 +26,11 @@ export function isSnowflake(v: string): boolean {
 export function bitfieldBit(n: number | bigint | string): bigint {
   return BigInt(1) << BigInt(n);
 }
+
+export const createDefaultSchedule = (): DaySchedule[] =>
+  (["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"] as const).map((day) => ({
+    day,
+    timeSlots: [],
+  }));
 
 export * from "./validators.js";
