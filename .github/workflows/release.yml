@@ -26,6 +26,10 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      # Tag drives the published version: v0.1.0 -> 0.1.0. package.json version
+      # in git is ignored, so no manual bump/commit per release.
+      - run: pnpm version --no-git-tag-version "${GITHUB_REF_NAME#v}"
+
       - run: pnpm build
 
       # tsdown regenerates package.json exports on build — publish the built copy as-is.
