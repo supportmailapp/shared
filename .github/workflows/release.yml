@@ -31,14 +31,13 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # Tag drives the published version: v0.1.0 -> 0.1.0. package.json version
-      # in git is ignored, so no manual bump/commit per release.
+      # Manual dispatch with a version input overrides package.json for this
+      # run only. On a normal release, publish the committed package.json version as-is.
       - if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.version != '' }}
         run: pnpm version --no-git-tag-version "${{ github.event.inputs.version }}"
 
       - run: pnpm build
 
-      # tsdown regenerates package.json exports on build — publish the built copy as-is.
       - run: pnpm publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
