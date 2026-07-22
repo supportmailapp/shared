@@ -1,12 +1,7 @@
 import { defineConfig } from "tsdown";
 
 export default defineConfig({
-  entry: [
-    "src/types/index.ts",
-    "src/protocol/index.ts",
-    "src/utils/index.ts",
-    "src/models/index.ts",
-  ],
+  entry: ["src/types/index.ts", "src/protocol/index.ts", "src/utils/index.ts", "src/models/index.ts"],
   format: ["esm"],
   dts: true,
   tsconfig: true,

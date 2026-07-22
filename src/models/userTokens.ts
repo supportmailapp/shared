@@ -38,7 +38,7 @@ export function makeUserTokenSchema(opts: UserTokenSchemaOptions): Schema<IUserT
         get: (v: string | null) => (v ? decrypt(v) : v),
       },
       expiresAt: { type: Date, required: true },
-      clearance: { type: String, enum: ["user","admin"], default: "user" }
+      clearance: { type: String, enum: ["user", "mod", "admin"], default: "user" },
     },
     {
       timestamps: true,

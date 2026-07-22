@@ -15,13 +15,25 @@
     "build": "tsdown",
     "dev": "tsdown --watch",
     "typecheck": "tsc --noEmit",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "discord-api-types": "^0.38.50",
+    "husky": "^9.1.7",
     "mongoose": "9.8.0",
     "prettier": "^3.9.5",
     "tsdown": "^0.22.5",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "zod": "^4.4.3"
+  },
+  "peerDependencies": {
+    "discord-api-types": "^0.38",
+    "mongoose": ">=9",
+    "zod": "^4"
+  },
+  "overrides": {
+    "bson": "7.2.0"
   },
   "exports": {
     "./models": "./dist/models/index.mjs",
@@ -32,11 +44,5 @@
   },
   "files": [
     "dist"
-  ],
-  "peerDependencies": {
-    "mongoose": ">=9"
-  },
-  "overrides": {
-    "bson": "7.2.0"
-  }
+  ]
 }
