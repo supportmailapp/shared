@@ -1,5 +1,5 @@
 import type { EntityType, ReportNotificationType } from "../utils/enums.js";
-import type { MentionableEntity, SpecialChannel } from "../utils/helperTypes.js";
+import type { MentionableEntity, SpecialChannel } from "../utils/helpers.js";
 
 export interface IAnonym {
   /**

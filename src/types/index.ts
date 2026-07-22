@@ -6,9 +6,8 @@
 // Migrated from the old `sm-types` submodule (`types/src`).
 
 export * from "./utils/enums.js";
-export * from "./utils/helperTypes.js";
+export * from "./utils/helpers.js";
 export * from "./utils/forms.js";
-export * from "./utils/validators.js";
 
 export * from "./database/user.js";
 export * from "./database/guild.js";

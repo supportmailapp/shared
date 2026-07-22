@@ -10,7 +10,7 @@ import type {
   APITextDisplayComponent,
   ComponentType,
 } from "discord-api-types/v10";
-import type { APIAllowedMentions as SMAPIAllowedMentions } from "../utils/validators.js";
+import type { APIAllowedMentions as SMAPIAllowedMentions } from "../utils/helpers.js";
 
 export type SMMediaItem = {
   url: string;

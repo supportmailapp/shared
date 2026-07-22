@@ -1,4 +1,4 @@
-import type { SpecialChannel } from "../utils/helperTypes.js";
+import type { SpecialChannel } from "../utils/helpers.js";
 
 /**
  * A general interface for command configurations.

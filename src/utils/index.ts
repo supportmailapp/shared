@@ -9,3 +9,20 @@
 export function isSnowflake(v: string): boolean {
   return /^\d{17,20}$/.test(v);
 }
+
+/**
+ * Does the `1 << n` operation.
+ *
+ * Example: You wanna check if bit 3 is set in a bitfield, you can do:
+ * ```ts
+ * const bitToCheck = bitfieldBit(3); // 8
+ * if (bitfield & bitToCheck) {
+ *   // Bit 3 is set
+ * }
+ * ```
+ */
+export function bitfieldBit(n: number | bigint | string): bigint {
+  return BigInt(1) << BigInt(n);
+}
+
+export * from "./validators.js";

@@ -1,4 +1,4 @@
-import { z } from "zod/mini";
+import * as z from "zod/mini";
 
 export const SnowflakeSchema = z.string().check(z.regex(/^\d{17,23}$/, "Invalid Snowflake"));
 
@@ -10,5 +10,3 @@ export const APIAllowedMentionsSchema = z.object({
   users: z.optional(z.array(SnowflakeSchema).check(z.maxLength(100, "Maximum of 100 user mentions"))),
   roles: z.optional(z.array(SnowflakeSchema).check(z.maxLength(100, "Maximum of 100 role mentions"))),
 });
-
-export type APIAllowedMentions = z.output<typeof APIAllowedMentionsSchema>;

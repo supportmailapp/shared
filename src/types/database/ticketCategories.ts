@@ -1,5 +1,5 @@
 import type { IFormComponent } from "../utils/forms.js";
-import type { MentionableEntity } from "../utils/helperTypes.js";
+import type { MentionableEntity } from "../utils/helpers.js";
 
 export interface ITicketCategory {
   /**

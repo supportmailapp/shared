@@ -5,6 +5,8 @@ import type {
   TextInputStyle,
 } from "discord-api-types/v10";
 import { EntityType, SpecialChannelType } from "./enums.js";
+import type { APIAllowedMentionsSchema } from "$utils/validators.js";
+import type * as z from "zod/mini";
 export * from "./forms.js";
 
 export type SpecialChannel = {
@@ -46,17 +48,4 @@ export type TopLevelMessageComponent = Exclude<
   APIFileComponent | APIMediaGalleryComponent
 >;
 
-/**
- * Does the `1 << n` operation.
- *
- * Example: You wanna check if bit 3 is set in a bitfield, you can do:
- * ```ts
- * const bitToCheck = bitfieldBit(3); // 8
- * if (bitfield & bitToCheck) {
- *   // Bit 3 is set
- * }
- * ```
- */
-export function bitfieldBit(n: number | bigint | string): bigint {
-  return BigInt(1) << BigInt(n);
-}
+export type APIAllowedMentions = z.output<typeof APIAllowedMentionsSchema>;
