@@ -7,6 +7,7 @@ export default defineConfig({
   tsconfig: true,
   clean: true,
   treeshake: true,
+  target: "ES2025",
   // Generates the `exports` map into package.json on build — one subpath per
   // entry: "./types", "./protocol", "./utils", "./models" (+ "./package.json").
   exports: {
