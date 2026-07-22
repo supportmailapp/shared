@@ -1,4 +1,4 @@
-import type { ICustomModalField, IFormComponent } from "../utils/forms.js";
+import type { IFormComponent } from "../utils/forms.js";
 import type { MentionableEntity } from "../utils/helperTypes.js";
 
 export interface ITicketCategory {
@@ -35,12 +35,6 @@ export interface ITicketCategory {
    * Optional array of entities to ping when a ticket of this category is created.
    */
   pings?: MentionableEntity[];
-  /**
-   * Custom Modal fields to be displayed in the ticket creation modal.
-   *
-   * @deprecated Use `components` instead.
-   */
-  fields?: ICustomModalField[];
   /**
    * Custom Form components to be displayed in the ticket creation modal.
    */
