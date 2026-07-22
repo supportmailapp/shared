@@ -1,2 +1,2 @@
-pnpm typecheck
 pnpm build
+pnpm typecheck
