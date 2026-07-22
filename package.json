@@ -16,7 +16,7 @@
     "dev": "tsdown --watch",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
-    "prepare": "husky"
+    "prepare": "husky || true"
   },
   "devDependencies": {
     "discord-api-types": "^0.38.50",
