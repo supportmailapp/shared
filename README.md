@@ -38,7 +38,7 @@ Needs a `read:packages` token.
 
 **pnpm / npm** — `.npmrc`:
 
-```
+```bash
 @supportmailapp:registry=https://npm.pkg.github.com
 //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
 ```
