@@ -3,6 +3,14 @@
   "version": "0.0.1",
   "description": "Shared stuff for SupportMail",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/supportmailapp/shared.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "packageManager": "pnpm@11.15.1",
   "scripts": {
     "build": "tsdown",
     "dev": "tsdown --watch",
