@@ -1,6 +1,6 @@
 {
   "name": "@supportmailapp/shared",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Shared stuff for SupportMail",
   "type": "module",
   "repository": {
