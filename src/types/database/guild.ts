@@ -1,4 +1,4 @@
-import type { EntityType, ReportNotificationType } from "../utils/enums.js";
+import type { EntityType, ReportDMField, ReportStatus } from "../utils/enums.js";
 import type { MentionableEntity, SpecialChannel } from "../utils/helpers.js";
 
 export interface IAnonym {
@@ -66,6 +66,30 @@ export interface ReportLimitsConfig {
   opens?: number;
 }
 
+/** A resolve status a DM can be triggered by. Open reports are not a resolution. */
+export type ReportResolveStatus = Exclude<ReportStatus, ReportStatus.open>;
+
+export interface ReportDMConfig {
+  enabled: boolean;
+  /** Which pieces of information the DM contains. */
+  fields: ReportDMField[];
+  /** Which resolve statuses trigger the DM. Unused for `onCreate`. */
+  statuses?: ReportResolveStatus[];
+}
+
+export interface ReportDMSettings {
+  /** DM to the reporting user when their report is created. */
+  onCreate: Omit<ReportDMConfig, "statuses">;
+  /** DM to the reporting user when their report is resolved. */
+  onResolve: ReportDMConfig;
+  /**
+   * DM to the reported user once an action was taken.
+   *
+   * Never contains the reporter's identity or the moderator's identity.
+   */
+  reportedUser: ReportDMConfig;
+}
+
 export interface IReportConfig {
   enabled: boolean;
   pausedUntil?: PausedUntil | null;
@@ -77,7 +101,7 @@ export interface IReportConfig {
   immune?: MentionableEntity[];
   mods?: MentionableEntity[];
   limits?: ReportLimitsConfig;
-  notifications?: ReportNotificationType[];
+  dmSettings?: ReportDMSettings;
 }
 
 export interface IGuildFlags {

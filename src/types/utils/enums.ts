@@ -1,7 +1,27 @@
-export enum ReportNotificationType {
-  ActionTaken = 0,
-  ReportSummary = 1,
-  ModeratorInfo = 2,
+/**
+ * A piece of information that can be included in a report-related DM.
+ *
+ * Not every field is valid for every DM kind - see `ReportDMSettings`.
+ */
+export enum ReportDMField {
+  /** The report's short ID. */
+  ReportId = 0,
+  /** The reported user (username + ID). Never valid for the reported user's own DM. */
+  ReportedUser = 1,
+  /** The reason the reporter gave. */
+  Reason = 2,
+  /** Link to and excerpt of the reported message, if the report has one. */
+  ReportedMessage = 3,
+  /** The comment the reporter gave (context command only). */
+  Comment = 4,
+  /** The action a moderator took (the new report status). */
+  Action = 5,
+  /** Timeout duration / ban message-deletion window, if applicable. */
+  ActionDuration = 6,
+  /** The moderator who resolved the report. Never valid for the reported user's DM. */
+  Moderator = 7,
+  /** The comment the moderator left when resolving. */
+  ResolveComment = 8,
 }
 
 export const BlacklistScopes = {
