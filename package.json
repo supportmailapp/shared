@@ -10,7 +10,7 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
-  "packageManager": "pnpm@11.15.1",
+  "packageManager": "pnpm@12.6.0",
   "scripts": {
     "build": "tsdown",
     "dev": "tsdown --watch",
