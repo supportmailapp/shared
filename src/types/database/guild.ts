@@ -1,5 +1,6 @@
 import type { EntityType, ReportDMField, ReportStatus } from "../utils/enums.js";
 import type { MentionableEntity, SpecialChannel } from "../utils/helpers.js";
+import type { ITagRuleSet } from "./tagRuleSet.js";
 
 export interface IAnonym {
   /**
@@ -132,6 +133,10 @@ export interface IDBGuild {
   ticketConfig: ITicketConfig;
   reportConfig: IReportConfig;
   blacklistImmune?: BlacklistImmunityEntry[]; // [ [ type, "id" ] ]
+  /**
+   * Named tag access rule sets, referenced by `ITag.ruleSetId`. Max 10.
+   */
+  tagRuleSets?: ITagRuleSet[];
   ai?: {
     /**
      * Indicates if AI features are enabled in the guild (premium feature)

@@ -114,3 +114,4 @@ export const createDefaultReportDMSettings = (): ReportDMSettings => ({
 });
 
 export * from "./validators.js";
+export * from "./tagAccess.js";
