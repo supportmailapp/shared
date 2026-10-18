@@ -122,6 +122,9 @@ export interface IGuildFlags {
 
 export type BlacklistImmunityEntry = [EntityType, string]; // [ type, "id" ]
 
+/** Progress of the guild's onboarding wizard. */
+export type GuildSetupState = "pending" | "success" | "skipped";
+
 export interface IDBGuild {
   /**
    * The Guild ID.
@@ -137,6 +140,10 @@ export interface IDBGuild {
    * Named tag access rule sets, referenced by `ITag.ruleSetId`. Max 10.
    */
   tagRuleSets?: ITagRuleSet[];
+  /**
+   * Onboarding wizard state. Absent means treated as "skipped".
+   */
+  setupState?: GuildSetupState;
   ai?: {
     /**
      * Indicates if AI features are enabled in the guild (premium feature)
