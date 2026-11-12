@@ -23,3 +23,9 @@ export {
   parseWhitelabelKey,
   sealWhitelabelToken,
 } from "./whitelabelCrypto.js";
+export {
+  WHITELABEL_COLLECTION,
+  makeWhitelabelBotSchema,
+  type WhitelabelBotMethods,
+  type WhitelabelBotSchemaOptions,
+} from "./whitelabelBot.js";

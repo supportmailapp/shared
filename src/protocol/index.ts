@@ -34,6 +34,39 @@ export interface ClusterState {
   status?: unknown;
 }
 
+/** Lifecycle state of one instance, as the manager tracks it. */
+export type InstanceRunState = "stopped" | "starting" | "running" | "failed";
+
+/**
+ * The manager's public view of one instance (a single-guild bot process).
+ * Carries no guild id: the public socket must not reveal which guilds run an
+ * instance. `status` is the opaque HEARTBEAT payload, forwarded verbatim.
+ */
+export interface InstanceState {
+  instanceId: string;
+  state: InstanceRunState;
+  generation: number;
+  alive: boolean;
+  /** Unix ms of the last heartbeat; 0 if never seen. */
+  lastBeat: number;
+  /** Set when `state` is "failed". */
+  exitCode?: number;
+  /** Opaque bot-defined payload. Omitted when absent. */
+  status?: unknown;
+}
+
+/** Internal-socket view only (GET_INSTANCE_STATUSES). Never sent on the public WS. */
+export interface InstanceInfo extends InstanceState {
+  guildIds: string[];
+}
+
+/** One entry of a SYNC_INSTANCES request: which guilds an instance serves and whether it should run. */
+export interface InstanceSyncEntry {
+  instanceId: string;
+  guildIds: string[];
+  run: boolean;
+}
+
 /**
  * Full active-fleet snapshot. Sent exactly once, as the first message on
  * connect, so a late joiner is brought up to date without any replay.
@@ -42,17 +75,26 @@ export interface SnapshotEvent {
   type: "snapshot";
   /** Omitted (not []) when the active fleet is empty — the Go side is omitempty. */
   clusters?: ClusterState[];
+  /**
+   * Whitelabel instances, without guild ids (the socket is public). Omitted when
+   * there are none, and by older managers.
+   */
+  instances?: InstanceState[];
 }
 
 /**
- * A single cluster changed. Exactly one of `cluster` / `removed` is present:
- * `cluster` = upsert this cluster's state; `removed` = this clusterId went
- * away (disconnect or heartbeat-reap).
+ * A single cluster or instance changed. At most one of `cluster`, `removed`,
+ * `instance`, `removedInstance` is present: `cluster` = upsert this cluster's
+ * state; `removed` = this clusterId went away (disconnect or heartbeat-reap);
+ * `instance` = upsert this instance's state; `removedInstance` = this instance
+ * id was removed from the manager's set.
  */
 export interface DeltaEvent {
   type: "delta";
   cluster?: ClusterState;
   removed?: number;
+  instance?: InstanceState;
+  removedInstance?: string;
 }
 
 /**
