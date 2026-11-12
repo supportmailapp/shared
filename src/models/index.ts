@@ -12,3 +12,14 @@
 // `models.X ? model(X) : model(X, schema)` guard.
 
 export { makeUserTokenSchema, type UserTokenSchemaOptions } from "./userTokens.js";
+export {
+  WHITELABEL_KEY_CREDENTIAL,
+  WHITELABEL_KEY_ENV,
+  WhitelabelCryptoError,
+  type WhitelabelCryptoErrorCode,
+  loadWhitelabelKey,
+  newInstanceId,
+  openWhitelabelToken,
+  parseWhitelabelKey,
+  sealWhitelabelToken,
+} from "./whitelabelCrypto.js";
