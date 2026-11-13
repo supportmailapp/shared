@@ -46,6 +46,7 @@
     "./package.json": "./package.json"
   },
   "files": [
-    "dist"
+    "dist",
+    "PROTOCOL.md"
   ]
 }

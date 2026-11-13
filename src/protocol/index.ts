@@ -5,7 +5,8 @@
 // and parses each text frame as JSON into a `StatusEvent`. Keep this file in
 // sync with status.go — the JSON tags there are the source of truth. Go cannot
 // consume this package, so the sm-manager side stays a hand-mirror against
-// PROTOCOL.md.
+// PROTOCOL.md (the canonical op-code contract, hosted in this repo and shipped
+// in the package).
 //
 // Connection:
 //   const ws = new WebSocket("wss://.../ws?key=<apiKey>");
