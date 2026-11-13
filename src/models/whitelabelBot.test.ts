@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { describe, expect, it } from "vitest";
+import { afterAll, describe, expect, it } from "vitest";
 import { WHITELABEL_COLLECTION, makeWhitelabelBotSchema } from "./whitelabelBot.js";
 
 const schema = makeWhitelabelBotSchema({
@@ -9,7 +9,14 @@ const schema = makeWhitelabelBotSchema({
     return s.slice(`sealed:${g}:`.length);
   },
 });
-const M = mongoose.model("WlTest", schema);
+// Mongoose models are process-global: use a name no other test file or consumer
+// registers, and delete it again when this file is done.
+const MODEL_NAME = "WhitelabelBotSchemaTestModel";
+const M = mongoose.model(MODEL_NAME, schema);
+
+afterAll(() => {
+  mongoose.deleteModel(MODEL_NAME);
+});
 
 describe("makeWhitelabelBotSchema", () => {
   it("setToken seals with the guild id, readToken opens", () => {
