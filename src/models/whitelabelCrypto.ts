@@ -28,8 +28,8 @@ export type WhitelabelCryptoErrorCode = "key_missing" | "key_invalid" | "decrypt
 export class WhitelabelCryptoError extends Error {
   readonly code: WhitelabelCryptoErrorCode;
 
-  constructor(code: WhitelabelCryptoErrorCode, detail?: string) {
-    super(detail ? `${code}: ${detail}` : code);
+  constructor(code: WhitelabelCryptoErrorCode, detail?: string, options?: { cause?: unknown }) {
+    super(detail ? `${code}: ${detail}` : code, options);
     this.name = "WhitelabelCryptoError";
     this.code = code;
   }
@@ -38,7 +38,9 @@ export class WhitelabelCryptoError extends Error {
 /** Parse a base64 key. Must decode to exactly 32 bytes, else `key_invalid`. Never echoes the input. */
 export function parseWhitelabelKey(base64: string): Buffer {
   const trimmed = base64.trim();
-  if (!BASE64_RE.test(trimmed)) {
+  // Canonical only: the alphabet check alone accepts bad padding and non-zero
+  // trailing bits, so also require that decode + re-encode reproduces the input.
+  if (!BASE64_RE.test(trimmed) || Buffer.from(trimmed, "base64").toString("base64") !== trimmed) {
     throw new WhitelabelCryptoError("key_invalid", "key is not valid base64");
   }
   const key = Buffer.from(trimmed, "base64");
@@ -67,7 +69,8 @@ export function loadWhitelabelKey(opts: {
       raw = readFileSync(join(opts.credentialsDir, WHITELABEL_KEY_CREDENTIAL), "utf8");
     } catch (e) {
       if ((e as NodeJS.ErrnoException).code !== "ENOENT") {
-        throw new WhitelabelCryptoError("key_missing", "credential file is unreadable");
+        // Keep the original errno (EACCES, EISDIR, ...) as `cause` for diagnosis.
+        throw new WhitelabelCryptoError("key_missing", "credential file is unreadable", { cause: e });
       }
     }
     if (raw !== null) return parseWhitelabelKey(raw);

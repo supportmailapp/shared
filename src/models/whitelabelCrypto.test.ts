@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -56,6 +56,79 @@ describe("whitelabel token crypto", () => {
   it("parseWhitelabelKey accepts 32 bytes only", () => {
     expect(parseWhitelabelKey(Buffer.alloc(32).toString("base64")).length).toBe(32);
     expect(() => parseWhitelabelKey(Buffer.alloc(16).toString("base64"))).toThrow(/key_invalid|32/);
+  });
+
+  it("parseWhitelabelKey rejects non-canonical and non-base64 input", () => {
+    const good = Buffer.alloc(32, 9).toString("base64");
+    expect(good.endsWith("=")).toBe(true);
+    expect(parseWhitelabelKey(`  ${good}\n`).length).toBe(32);
+    // not base64 at all, url-safe alphabet, inner whitespace, empty
+    for (const bad of [
+      "not base64!",
+      "%%%%",
+      `${good.slice(0, 20)}-_${good.slice(22)}`,
+      `${good.slice(0, 10)} ${good.slice(10)}`,
+      "",
+    ]) {
+      expect(() => parseWhitelabelKey(bad)).toThrow(/key_invalid/);
+    }
+    // missing padding, extra padding, non-zero trailing bits (still decodes to 32 bytes leniently)
+    expect(() => parseWhitelabelKey(good.slice(0, -1))).toThrow(/key_invalid/);
+    expect(() => parseWhitelabelKey(`${good}=`)).toThrow(/key_invalid/);
+    expect(() => parseWhitelabelKey(`${good.slice(0, 42)}B=`)).toThrow(/key_invalid/);
+    expect(() => parseWhitelabelKey(Buffer.alloc(33).toString("base64"))).toThrow(/key_invalid/);
+  });
+
+  it("parseWhitelabelKey never echoes the input", () => {
+    try {
+      parseWhitelabelKey("super-secret-not-base64!");
+      expect.unreachable();
+    } catch (e) {
+      expect((e as Error).message).not.toContain("super-secret");
+    }
+  });
+
+  it("seal and open reject a key that is not 32 bytes", () => {
+    const sealed = sealWhitelabelToken(key, "a", "1");
+    for (const len of [0, 16, 31, 33, 64]) {
+      const bad = Buffer.alloc(len, 7);
+      expect(() => sealWhitelabelToken(bad, "a", "1")).toThrow(/key_invalid/);
+      expect(() => openWhitelabelToken(bad, sealed, "1")).toThrow(/key_invalid/);
+    }
+  });
+
+  it("loadWhitelabelKey rejects a malformed credential file and does not fall back to env", () => {
+    const dir = mkdtempSync(join(tmpdir(), "wl-key-"));
+    try {
+      const envValue = Buffer.alloc(32, 1).toString("base64");
+      for (const content of ["", "\n", "garbage!!", Buffer.alloc(16).toString("base64")]) {
+        writeFileSync(join(dir, WHITELABEL_KEY_CREDENTIAL), content);
+        expect(() => loadWhitelabelKey({ credentialsDir: dir, envValue, allowEnv: true })).toThrow(/key_invalid/);
+      }
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("loadWhitelabelKey keeps the original errno as cause when the file is unreadable", () => {
+    const dir = mkdtempSync(join(tmpdir(), "wl-key-"));
+    try {
+      // A directory in place of the file: readFileSync fails with EISDIR, not ENOENT.
+      mkdirSync(join(dir, WHITELABEL_KEY_CREDENTIAL));
+      try {
+        loadWhitelabelKey({ credentialsDir: dir, allowEnv: false });
+        expect.unreachable();
+      } catch (e) {
+        expect(e).toBeInstanceOf(WhitelabelCryptoError);
+        expect((e as WhitelabelCryptoError).code).toBe("key_missing");
+        const cause = (e as Error).cause as NodeJS.ErrnoException;
+        expect(cause).toBeInstanceOf(Error);
+        expect(cause.code).toBeTruthy();
+        expect(cause.code).not.toBe("ENOENT");
+      }
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 
   it("loadWhitelabelKey prefers the credential file, trims whitespace", () => {
