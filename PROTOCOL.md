@@ -1,6 +1,6 @@
 # SupportMail sharding protocol
 
-Shared op-code contract between `sm-manager`, `supportmail` (cluster.ts), and `sm-api`. Copy this file into all three repos. When it changes, update the copy in every repo plus the matching type/struct file in the same sitting — there's no automated sync yet, only worth codegen once the op-code list outgrows manual maintenance.
+This file is the single canonical op-code contract between `sm-manager`, `supportmail` (cluster.ts), and `sm-api`. The other repos link here instead of keeping copies. `sm-manager` is Go and cannot import this package, so `internal/protocol/protocol.go` mirrors it by hand; `supportmail` and `sm-api` mirror it in their `src/protocol.ts`. When the contract changes, edit this file and update those mirrors in the same sitting.
 
 ## Envelope
 
@@ -15,14 +15,14 @@ Every message is a length-prefixed JSON frame. Requests get a matching response,
 
 This split is what keeps `sm-manager` reusable across bots:
 
-- **Structural ops** — the only ops the manager understands and acts on. Identical for every bot. The manager `switch`es on these to drive registration, liveness, and the generation handoff.
-- **Business ops** — opaque to the manager. It forwards them to the `target` cluster without inspecting the payload. This list is a contract between a bot's own cluster and its own API only; a different bot defines its own business ops without any change to `sm-manager`.
+- **Structural ops**: the only ops the manager understands and acts on. Identical for every bot. The manager `switch`es on these to drive registration, liveness, and the generation handoff.
+- **Business ops**: opaque to the manager. It forwards them to the `target` cluster without inspecting the payload. This list is a contract between a bot's own cluster and its own API only; a different bot defines its own business ops without any change to `sm-manager`.
 
-**Two places validation happens — and two places it must not:**
+**Two places validation happens, and two places it must not:**
 
-- The manager checks each inbound op against an allowed-op list from its config (structural ops always allowed, business ops from config). An unknown or misspelled op is rejected at the manager with `{ok: false, error}` rather than silently forwarded. This list is flat strings — op names only.
+- The manager checks each inbound op against an allowed-op list from its config (structural ops always allowed, business ops from config). An unknown or misspelled op is rejected at the manager with `{ok: false, error}` rather than silently forwarded. This list is flat strings, op names only.
 - The receiving cluster validates the _payload_ at its dispatch boundary (e.g. Zod), because that's where the payload is consumed and where the bot's types live.
-- The manager never validates or parses payloads, and never learns their shapes — doing so would re-couple it to a specific bot's domain. The API does not re-validate what the cluster will validate.
+- The manager never validates or parses payloads, and never learns their shapes: doing so would re-couple it to a specific bot's domain. The API does not re-validate what the cluster will validate.
 
 | Op                          | Tier       | Direction               | Purpose                                                                                                                                                                                                                                                                        |
 | --------------------------- | ---------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -75,10 +75,10 @@ A connection keeps the identity it first registered with. A later `REGISTER` on 
 
 A request whose `target.guildId` is in the exception register goes to that instance. If the instance is not connected, the manager answers `{ ok: false, error: "instance offline" }` and never falls back to a cluster. Any other guild id is routed to the cluster that owns it, as before.
 
-## TypeScript (`protocol.ts` — `supportmail` and `sm-api`)
+## TypeScript (`protocol.ts` - `supportmail` and `sm-api`)
 
 ```ts
-// Structural ops — known to the manager. Same for every bot.
+// Structural ops: known to the manager. Same for every bot.
 export type StructuralOp =
   | "REGISTER"
   | "HEARTBEAT"
@@ -93,7 +93,7 @@ export type StructuralOp =
   | "SYNC_INSTANCES"
   | "GET_INSTANCE_STATUSES";
 
-// Business ops — opaque to the manager. Bot-specific; this is SupportMail's set.
+// Business ops: opaque to the manager. Bot-specific; this is SupportMail's set.
 export type BusinessOp =
   | "VERIFY_GUILD_MEMBERSHIP"
   | "GET_GUILD_USERS"
@@ -149,7 +149,7 @@ export interface InstanceSyncEntry {
 }
 ```
 
-## Go (`protocol.go` — `sm-manager`)
+## Go (`protocol.go` - `sm-manager`)
 
 The manager declares only the structural ops. Business ops are handled as raw strings and never enumerated here, so this file does not change when a bot adds or removes a business op.
 
@@ -160,7 +160,7 @@ import "encoding/json/jsontext"
 
 type OpCode string
 
-// Structural ops — the only ops the manager acts on. Everything else is
+// Structural ops: the only ops the manager acts on. Everything else is
 // forwarded by target without inspection.
 const (
     OpRegister  OpCode = "REGISTER"
