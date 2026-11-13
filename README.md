@@ -11,7 +11,7 @@ Subpath exports, one per tier:
 | `@supportmailapp/shared/types`    | Pure types + enums. Zero deps — safe anywhere (browser, CF Workers, Bun, Node).                                                                   |
 | `@supportmailapp/shared/protocol` | `sm-manager` status WebSocket types + guards (`isSnapshot`, `isDelta`, `isRemoval`). Mirrors the Go wire types; `PROTOCOL.md` is source of truth. |
 | `@supportmailapp/shared/utils`    | Pure portable helpers. Zero env/crypto/IO.                                                                                                        |
-| `@supportmailapp/shared/models`   | Mongoose schema **factories** (not ready-made models). See below.                                                                                 |
+| `@supportmailapp/shared/models`   | Mongoose schema **factories** (not ready-made models). **Server-only** (Node/Bun): uses `node:crypto` and `node:fs`. See below.                   |
 
 ## Models: factory boundary
 
