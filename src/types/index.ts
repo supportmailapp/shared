@@ -29,3 +29,5 @@ export * from "./database/panel.js";
 export * from "./database/schedule.js";
 
 export * from "./database/whitelabelBot.js";
+
+export * from "./whitelabel.js";
