@@ -59,4 +59,52 @@ describe("makeWhitelabelBotSchema", () => {
     expect(schema.path("instanceId").options.unique).toBe(true);
     expect(schema.path("guildId").options.unique).toBe(true);
   });
+
+  describe("presence", () => {
+    it("presence defaults to null", () => {
+      const d = new M({ instanceId: "wl_p", guildId: "50" });
+      expect(d.presence).toBeNull();
+    });
+
+    it("accepts a presence with an activity", async () => {
+      const d = new M({
+        instanceId: "wl_p",
+        guildId: "50",
+        presence: { status: "idle", activity: { type: "watching", text: "tickets" } },
+      });
+      await expect(d.validate()).resolves.toBeUndefined();
+      expect(d.presence?.status).toBe("idle");
+      expect(d.presence?.activity?.type).toBe("watching");
+    });
+
+    it("rejects an unknown status", async () => {
+      const d = new M({
+        instanceId: "wl_p",
+        guildId: "50",
+        presence: { status: "away", activity: null },
+      });
+      await expect(d.validate()).rejects.toHaveProperty(["errors", "presence.status"]);
+    });
+
+    it("rejects an unknown activity type", async () => {
+      const d = new M({
+        instanceId: "wl_p",
+        guildId: "50",
+        presence: { status: "online", activity: { type: "streaming", text: "x" } },
+      });
+      await expect(d.validate()).rejects.toHaveProperty(["errors", "presence.activity.type"]);
+    });
+
+    it("presence survives toJSON", () => {
+      const d = new M({
+        instanceId: "wl_p",
+        guildId: "50",
+        presence: { status: "dnd", activity: { type: "custom", text: "busy" } },
+      });
+      d.setToken("abc");
+      const json = d.toJSON() as unknown as Record<string, unknown>;
+      expect("token" in json).toBe(false);
+      expect(json.presence).toEqual({ status: "dnd", activity: { type: "custom", text: "busy" } });
+    });
+  });
 });

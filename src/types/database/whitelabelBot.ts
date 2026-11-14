@@ -12,6 +12,17 @@ export type WhitelabelFailureReason =
   | "decrypt_failed"
   | "mode_not_whitelabel";
 
+/** Bot status shown in the member list. `invisible` appears offline. */
+export type WhitelabelPresenceStatus = "online" | "idle" | "dnd" | "invisible";
+
+/** Activity types offered for a whitelabel bot. No streaming. */
+export type WhitelabelActivityType = "custom" | "playing" | "listening" | "watching" | "competing";
+
+export interface WhitelabelPresence {
+  status: WhitelabelPresenceStatus;
+  activity: { type: WhitelabelActivityType; text: string } | null;
+}
+
 export interface IWhitelabelFailure {
   reason: WhitelabelFailureReason;
   detail?: string;
@@ -31,6 +42,8 @@ export interface IWhitelabelBot {
   failure: IWhitelabelFailure | null;
   /** sha256 of the last registered command body. */
   commandsHash: string | null;
+  /** Presence the instance sets on connect. `null` = default presence (see `WHITELABEL_DEFAULT_PRESENCE`). */
+  presence: WhitelabelPresence | null;
   createdAt: Date;
   updatedAt: Date;
 }

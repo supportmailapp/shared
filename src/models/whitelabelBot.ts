@@ -71,6 +71,33 @@ export function makeWhitelabelBotSchema(
         default: null,
       },
       commandsHash: { type: String, default: null },
+      presence: {
+        type: new Schema(
+          {
+            status: {
+              type: String,
+              required: true,
+              enum: ["online", "idle", "dnd", "invisible"],
+            },
+            activity: {
+              type: new Schema(
+                {
+                  type: {
+                    type: String,
+                    required: true,
+                    enum: ["custom", "playing", "listening", "watching", "competing"],
+                  },
+                  text: { type: String, required: true, maxlength: 128 },
+                },
+                { _id: false },
+              ),
+              default: null,
+            },
+          },
+          { _id: false },
+        ),
+        default: null,
+      },
     },
     {
       collection: WHITELABEL_COLLECTION,

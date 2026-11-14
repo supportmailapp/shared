@@ -41,7 +41,9 @@ export type InstanceRunState = "stopped" | "starting" | "running" | "failed";
 /**
  * The manager's public view of one instance (a single-guild bot process).
  * Carries no guild id: the public socket must not reveal which guilds run an
- * instance. `status` is the opaque HEARTBEAT payload, forwarded verbatim.
+ * instance. `status` is the opaque HEARTBEAT payload. On the public status
+ * WebSocket `status` is always omitted for instances; it is only present in
+ * `GET_INSTANCE_STATUSES`.
  */
 export interface InstanceState {
   instanceId: string;
@@ -52,7 +54,7 @@ export interface InstanceState {
   lastBeat: number;
   /** Set when `state` is "failed". */
   exitCode?: number;
-  /** Opaque bot-defined payload. Omitted when absent. */
+  /** Opaque bot-defined payload. Always omitted on the public status WebSocket; only present in `GET_INSTANCE_STATUSES`. */
   status?: unknown;
 }
 
